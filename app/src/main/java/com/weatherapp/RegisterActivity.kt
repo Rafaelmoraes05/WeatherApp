@@ -30,6 +30,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.weatherapp.ui.theme.DataField
+import com.weatherapp.ui.theme.PasswordField
 import com.weatherapp.ui.theme.WeatherAppTheme
 
 class RegisterActivity : ComponentActivity() {
@@ -66,38 +68,36 @@ fun RegisterPage(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        OutlinedTextField(
+        DataField(
+            label = "Nome de usuário",
             value = name,
-            onValueChange = { name = it },
-            label = { Text("Nome de usuário") },
-            modifier = Modifier.fillMaxWidth(0.9f)
+            onValueChange = { name = it }
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        DataField(
+            label = "E-mail",
             value = email,
-            onValueChange = { email = it },
-            label = { Text("E-mail") },
-            modifier = Modifier.fillMaxWidth(0.9f)
+            onValueChange = { email = it }
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        PasswordField(
+            label = "Senha",
             value = password,
-            onValueChange = { password = it },
-            label = { Text("Senha") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(0.9f)
+            onValueChange = { password = it }
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        PasswordField(
+            label = "Repita a senha",
             value = repeatPassword,
-            onValueChange = { repeatPassword = it },
-            label = { Text("Repita a senha") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(0.9f)
+            onValueChange = { repeatPassword = it }
         )
+
         Spacer(modifier = Modifier.height(24.dp))
 
         val isButtonEnabled = name.isNotEmpty() && email.isNotEmpty() &&
