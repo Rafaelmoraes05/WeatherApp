@@ -49,8 +49,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.weatherapp.api.WeatherService
 import com.weatherapp.db.fb.FBDatabase
+import com.weatherapp.db.local.LocalDatabase
 import com.weatherapp.viewModel.MainViewModelFactory
 import com.weatherapp.monitor.ForecastMonitor
+import com.weatherapp.repo.Repository
 
 
 class MainActivity : ComponentActivity() {
@@ -62,12 +64,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             var showDialog by remember { mutableStateOf(false) }
             val fbDB = remember { FBDatabase() }
+            val uid = Firebase.auth.currentUser?.uid ?: "weather_db"
+            val localDB = remember { LocalDatabase(this, uid) }
+            val repository = remember { Repository(fbDB, localDB) }
             val weatherService = remember { WeatherService() }
             val monitor = remember { ForecastMonitor(this.applicationContext) }
-            val viewModel : MainViewModel = viewModel(
-                factory = MainViewModelFactory(fbDB, weatherService, monitor)
+            val viewModel: MainViewModel = viewModel(
+                factory = MainViewModelFactory(repository, weatherService, monitor)
             )
-            DisposableEffect (Unit) {
+            DisposableEffect(Unit) {
                 val listener = Consumer<Intent> { intent ->
                     val name = intent.getStringExtra("city")
                     val city = viewModel.cities.find { it.name == name }
@@ -132,7 +137,7 @@ class MainActivity : ComponentActivity() {
                         launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                         MainNavHost(navController = navController, viewModel)
                     }
-                    LaunchedEffect (viewModel.page) {
+                    LaunchedEffect(viewModel.page) {
                         navController.navigate(viewModel.page) {
                             navController.graph.startDestinationRoute?.let {
                                 popUpTo(it) {
